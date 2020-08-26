@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 /// Enum delineating all actions that may be performed by the user, and
 /// thus have keybindings associated with them.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum UserAction {
     Left,
     Right,
@@ -228,4 +228,5 @@ pub fn input_to_str(input: Input) -> Option<String> {
     } else {
         return Some(code.to_string());
     }
+
 }
