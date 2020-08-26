@@ -25,6 +25,8 @@ pub enum UserAction {
     Remove,
     RemoveAll,
 
+    Help,
+
     Quit,
 }
 
@@ -83,6 +85,11 @@ impl Keybindings {
             })
             .collect();
     }
+
+    pub fn get_keymap(&self) -> HashMap<String, UserAction> {
+        self.map.clone()
+    }
+
 }
 
 /// Helper function converting a pancurses Input object to a unique

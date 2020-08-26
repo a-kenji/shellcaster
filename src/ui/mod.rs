@@ -9,11 +9,13 @@ mod panel;
 mod colors;
 mod menu;
 mod notification;
+mod help;
 
 use self::colors::{ColorType, Colors};
 use self::menu::Menu;
 use self::notification::NotifWin;
 use self::panel::{Details, Panel};
+use help::HelpWin;
 
 use lazy_static::lazy_static;
 use pancurses::{Input, Window};
@@ -84,6 +86,7 @@ pub struct UI<'a> {
     details_panel: Option<Panel>,
     notif_win: NotifWin,
     welcome_win: Option<Panel>,
+    help_win: Option<HelpWin>,
 }
 
 impl<'a> UI<'a> {
@@ -158,7 +161,7 @@ impl<'a> UI<'a> {
 
         let podcast_panel = Panel::new(
             colors.clone(),
-            "Podcasts".to_string(),
+            " Podcasts ".to_string(),
             0,
             n_row - 1,
             pod_col,
@@ -174,7 +177,7 @@ impl<'a> UI<'a> {
 
         let episode_panel = Panel::new(
             colors.clone(),
-            "Episodes".to_string(),
+            " Episodes ".to_string(),
             1,
             n_row - 1,
             ep_col,
@@ -223,6 +226,15 @@ impl<'a> UI<'a> {
             None
         };
 
+        // help screen
+        let help_win = Some(UI::make_help_win(
+                    colors.clone(),
+                    &config.keybindings,
+                    n_row -1,
+                    n_col,
+        ));
+
+
         return UI {
             stdscr,
             n_row,
@@ -235,8 +247,10 @@ impl<'a> UI<'a> {
             details_panel: details_panel,
             notif_win: notif_win,
             welcome_win: welcome_win,
+            help_win,
         };
-    }
+}
+
 
     /// This should be called immediately after creating the UI, in order
     /// to draw everything to the screen.
@@ -591,6 +605,13 @@ impl<'a> UI<'a> {
                         }
                     }
 
+                    Some(UserAction::Help) => {
+                    let ww = self.help_win.as_mut().unwrap();
+                    ww.panel.0.refresh();
+                    ww.panel.1.refresh();
+                    self.stdscr.refresh();
+                    }
+
                     Some(UserAction::Quit) => {
                         return UiMsg::Quit;
                     }
@@ -733,7 +754,7 @@ impl<'a> UI<'a> {
     {
         return Panel::new(
             colors,
-            "Details".to_string(),
+            " Details ".to_string(),
             2,
             n_row,
             n_col,
@@ -872,4 +893,10 @@ impl<'a> UI<'a> {
 
         return welcome_win;
     }
+
+pub fn make_help_win(colors: Colors, keymap: &Keybindings, n_row: i32, n_col: i32) -> HelpWin {
+    HelpWin::make_help_win(colors, keymap, n_row, n_col)
+}
+
+
 }
