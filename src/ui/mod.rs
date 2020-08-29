@@ -386,7 +386,7 @@ impl<'a> UI<'a> {
                     }
 
                     Some(UserAction::BigUp) => {
-                        let scroll = self.n_row / 3;
+                        let scroll = self.n_row / crate::config::BIG_SCROLL_LENGTH ;
                         match self.active_menu {
                             ActiveMenu::PodcastMenu => {
                                 if curr_pod_id.is_some() {
@@ -412,7 +412,7 @@ impl<'a> UI<'a> {
                     }
 
                     Some(UserAction::BigDown) => {
-                        let scroll = self.n_row / 3;
+                        let scroll = self.n_row / crate::config::BIG_SCROLL_LENGTH;
                         match self.active_menu {
                             ActiveMenu::PodcastMenu => {
                                 if curr_pod_id.is_some() {
