@@ -7,8 +7,7 @@ use std::collections::HashMap;
 pub enum UserAction {
     Left,
     Right,
-    Up,
-    Down,
+    Scroll(Scroll),
 
     AddFeed,
     Sync,
@@ -26,6 +25,17 @@ pub enum UserAction {
     RemoveAll,
 
     Quit,
+}
+
+/// Enum that wraps the Scrolling UserAction's
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Scroll{
+    Up,
+    Down,
+    BigDown,
+    BigUp,
+    PageDown,
+    PageUp,
 }
 
 /// Wrapper around a hash map that keeps track of all keybindings. Multiple
