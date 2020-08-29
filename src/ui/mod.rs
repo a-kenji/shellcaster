@@ -385,6 +385,108 @@ impl<'a> UI<'a> {
                         }
                     }
 
+                    Some(UserAction::BigUp) => {
+                        let scroll = self.n_row / 3;
+                        match self.active_menu {
+                            ActiveMenu::PodcastMenu => {
+                                if curr_pod_id.is_some() {
+                                    self.podcast_menu.scroll(- scroll);
+
+                                    self.episode_menu.top_row = 0;
+                                    self.episode_menu.selected = 0;
+
+                                    // update episodes menu with new list
+                                    self.episode_menu.items = self.podcast_menu.get_episodes();
+                                    self.episode_menu.update_items();
+                                    self.update_details_panel();
+                                }
+                            }
+                            ActiveMenu::EpisodeMenu => {
+                                if curr_pod_id.is_some() {
+                                    self.episode_menu.scroll(- scroll);
+                                    self.update_details_panel();
+                                }
+                            }
+                        }
+
+                    }
+
+                    Some(UserAction::BigDown) => {
+                        let scroll = self.n_row / 3;
+                        match self.active_menu {
+                            ActiveMenu::PodcastMenu => {
+                                if curr_pod_id.is_some() {
+                                    self.podcast_menu.scroll(scroll);
+
+                                    self.episode_menu.top_row = 0;
+                                    self.episode_menu.selected = 0;
+
+                                    // update episodes menu with new list
+                                    self.episode_menu.items = self.podcast_menu.get_episodes();
+                                    self.episode_menu.update_items();
+                                    self.update_details_panel();
+                                }
+                            }
+                            ActiveMenu::EpisodeMenu => {
+                                if curr_ep_id.is_some() {
+                                    self.episode_menu.scroll(scroll);
+                                }
+                            }
+                        }
+
+                    }
+
+                    Some(UserAction::PageUp) => {
+                        let scroll = self.n_row;
+                        match self.active_menu {
+                            ActiveMenu::PodcastMenu => {
+                                if curr_pod_id.is_some() {
+                                    self.podcast_menu.scroll(- scroll);
+
+                                    self.episode_menu.top_row = 0;
+                                    self.episode_menu.selected = 0;
+
+                                    // update episodes menu with new list
+                                    self.episode_menu.items = self.podcast_menu.get_episodes();
+                                    self.episode_menu.update_items();
+                                    self.update_details_panel();
+                                }
+                            }
+                            ActiveMenu::EpisodeMenu => {
+                                if curr_pod_id.is_some() {
+                                    self.episode_menu.scroll(- scroll);
+                                    self.update_details_panel();
+                                }
+                            }
+                        }
+
+                    }
+
+                    Some(UserAction::PageDown) => {
+                        let scroll = self.n_row;
+                        match self.active_menu {
+                            ActiveMenu::PodcastMenu => {
+                                if curr_pod_id.is_some() {
+                                    self.podcast_menu.scroll(scroll);
+
+                                    self.episode_menu.top_row = 0;
+                                    self.episode_menu.selected = 0;
+
+                                    // update episodes menu with new list
+                                    self.episode_menu.items = self.podcast_menu.get_episodes();
+                                    self.episode_menu.update_items();
+                                    self.update_details_panel();
+                                }
+                            }
+                            ActiveMenu::EpisodeMenu => {
+                                if curr_ep_id.is_some() {
+                                    self.episode_menu.scroll(scroll);
+                                }
+                            }
+                        }
+
+                    }
+
                     Some(UserAction::Left) => {
                         if curr_pod_id.is_some() {
                             match self.active_menu {
@@ -412,6 +514,7 @@ impl<'a> UI<'a> {
                             self.update_details_panel();
                         }
                     }
+
 
                     Some(UserAction::AddFeed) => {
                         let url = &self.spawn_input_notif("Feed URL: ");
