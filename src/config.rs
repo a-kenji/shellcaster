@@ -28,7 +28,7 @@ pub const DETAILS_PANEL_LENGTH: i32 = 135;
 // How many lines will be scrolled by the big scroll
 // is an indicator for the percenate of the screen that
 // will be scrolled eg. 2 = 50%, 3 ~ 33%
-pub const BIG_SCROLL_PROPORTION: i32 = 3;
+pub const BIG_SCROLL_AMOUNT: i32 = 3;
 
 
 /// Holds information about user configuration of program.

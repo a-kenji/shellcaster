@@ -338,26 +338,27 @@ impl<'a> UI<'a> {
 
                 match self.keymap.get_from_input(input) {
                     Some(UserAction::Scroll(Scroll::Down)) => {
-                        self.scroll_current_window(curr_pod_id, curr_ep_id, 1);
+                        self.scroll_current_window(curr_pod_id, 1);
                             }
                     Some(UserAction::Scroll(Scroll::Up)) => {
-                        self.scroll_current_window(curr_pod_id, curr_ep_id, -1);
+                        self.scroll_current_window(curr_pod_id, - 1);
                     }
                     Some(UserAction::Scroll(scroll)) => {
-                        let size = self.n_col;
                         match scroll {
+                            // TODO make BigUp and BigDown dependend
+                            // on screen size
                             Scroll::BigUp => {
                                 self.scroll_current_window(curr_pod_id,
-                                    curr_ep_id, - size / 3);
+                                    - crate::config::BIG_SCROLL_AMOUNT);
                             },
                             Scroll::BigDown => {
-                                self.scroll_current_window(curr_pod_id, curr_ep_id, size / crate::config::BIG_SCROLL_PROPORTION);
+                                self.scroll_current_window(curr_pod_id, crate::config::BIG_SCROLL_AMOUNT);
                             },
                             Scroll::PageUp => {
-                                self.scroll_current_window(curr_pod_id, curr_ep_id, - size);
+                                self.scroll_current_window(curr_pod_id, - self.n_col);
                             },
                             Scroll::PageDown => {
-                                self.scroll_current_window(curr_pod_id, curr_ep_id,  size);
+                                self.scroll_current_window(curr_pod_id,  self.n_col);
                             },
                             _ => {},
                         }
@@ -792,7 +793,7 @@ impl<'a> UI<'a> {
     /// the specified amount and refreshes
     /// the window.
     /// Positive Scroll is down.
-    pub fn scroll_current_window(&mut self, _ep_id: Option<i64>, pod_id: Option<i64>, scroll: i32){
+    pub fn scroll_current_window(&mut self,pod_id: Option<i64>, scroll: i32){
         match self.active_menu {
             ActiveMenu::PodcastMenu => {
                 if pod_id.is_some() {
