@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
 
-use crate::keymap::{Keybindings, UserAction};
+use crate::keymap::{Keybindings, UserAction, Scroll};
 
 // Specifies how long, in milliseconds, to display messages at the
 // bottom of the screen in the UI.
@@ -28,7 +28,7 @@ pub const DETAILS_PANEL_LENGTH: i32 = 135;
 // How many lines will be scrolled by the big scroll
 // is an indicator for the percenate of the screen that
 // will be scrolled eg. 2 = 50%, 3 ~ 33%
-pub const BIG_SCROLL_LENGTH: i32 = 3;
+pub const BIG_SCROLL_PROPORTION: i32 = 3;
 
 
 /// Holds information about user configuration of program.
@@ -145,12 +145,12 @@ fn config_with_defaults(config_toml: &ConfigFromToml) -> Config {
     let action_map: Vec<(&Option<Vec<String>>, UserAction, Vec<String>)> = vec![
         (&config_toml.keybindings.left, UserAction::Left, vec!["Left".to_string(), "h".to_string()]),
         (&config_toml.keybindings.right, UserAction::Right, vec!["Right".to_string(), "l".to_string()]),
-        (&config_toml.keybindings.up, UserAction::Up, vec!["Up".to_string(), "k".to_string()]),
-        (&config_toml.keybindings.down, UserAction::Down, vec!["Down".to_string(), "j".to_string()]),
-        (&config_toml.keybindings.big_up, UserAction::BigUp, vec!["C-U".to_string(), "u".to_string()]),
-        (&config_toml.keybindings.big_down, UserAction::BigDown, vec!["e".to_string()]),
-        (&config_toml.keybindings.page_up, UserAction::PageUp, vec!["PgUp".into()]),
-        (&config_toml.keybindings.page_down, UserAction::PageDown, vec!["PgDn".into()]),
+        (&config_toml.keybindings.up, UserAction::Scroll(Scroll::Up), vec!["Up".to_string(), "k".to_string()]),
+        (&config_toml.keybindings.down, UserAction::Scroll(Scroll::Down), vec!["Down".to_string(), "j".to_string()]),
+        (&config_toml.keybindings.big_up, UserAction::Scroll(Scroll::BigUp), vec!["C-U".to_string(), "u".to_string()]),
+        (&config_toml.keybindings.big_down, UserAction::Scroll(Scroll::BigDown), vec!["e".to_string()]),
+        (&config_toml.keybindings.page_up, UserAction::Scroll(Scroll::PageUp), vec!["PgUp".into()]),
+        (&config_toml.keybindings.page_down, UserAction::Scroll(Scroll::PageDown), vec!["PgDn".into()]),
 
         (&config_toml.keybindings.add_feed, UserAction::AddFeed, vec!["a".to_string()]),
         (&config_toml.keybindings.sync, UserAction::Sync, vec!["s".to_string()]),

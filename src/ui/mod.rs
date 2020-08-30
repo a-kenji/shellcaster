@@ -21,7 +21,7 @@ use regex::Regex;
 
 use super::MainMessage;
 use crate::config::Config;
-use crate::keymap::{Keybindings, UserAction};
+use crate::keymap::{Keybindings, UserAction, Scroll};
 use crate::types::*;
 
 lazy_static! {
@@ -337,154 +337,30 @@ impl<'a> UI<'a> {
                 }
 
                 match self.keymap.get_from_input(input) {
-                    Some(UserAction::Down) => {
-                        match self.active_menu {
-                            ActiveMenu::PodcastMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.podcast_menu.scroll(1);
-
-                                    self.episode_menu.top_row = 0;
-                                    self.episode_menu.selected = 0;
-
-                                    // update episodes menu with new list
-                                    self.episode_menu.items = self.podcast_menu.get_episodes();
-                                    self.episode_menu.update_items();
-                                    self.update_details_panel();
-                                }
+                    Some(UserAction::Scroll(Scroll::Down)) => {
+                        self.scroll_current_window(curr_pod_id, curr_ep_id, 1);
                             }
-                            ActiveMenu::EpisodeMenu => {
-                                if curr_ep_id.is_some() {
-                                    self.episode_menu.scroll(1);
-                                    self.update_details_panel();
-                                }
-                            }
-                        }
+                    Some(UserAction::Scroll(Scroll::Up)) => {
+                        self.scroll_current_window(curr_pod_id, curr_ep_id, -1);
                     }
-
-                    Some(UserAction::Up) => {
-                        match self.active_menu {
-                            ActiveMenu::PodcastMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.podcast_menu.scroll(-1);
-
-                                    self.episode_menu.top_row = 0;
-                                    self.episode_menu.selected = 0;
-
-                                    // update episodes menu with new list
-                                    self.episode_menu.items = self.podcast_menu.get_episodes();
-                                    self.episode_menu.update_items();
-                                    self.update_details_panel();
-                                }
-                            }
-                            ActiveMenu::EpisodeMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.episode_menu.scroll(-1);
-                                    self.update_details_panel();
-                                }
-                            }
+                    Some(UserAction::Scroll(scroll)) => {
+                        let size = self.n_col;
+                        match scroll {
+                            Scroll::BigUp => {
+                                self.scroll_current_window(curr_pod_id,
+                                    curr_ep_id, - size / 3);
+                            },
+                            Scroll::BigDown => {
+                                self.scroll_current_window(curr_pod_id, curr_ep_id, size / crate::config::BIG_SCROLL_PROPORTION);
+                            },
+                            Scroll::PageUp => {
+                                self.scroll_current_window(curr_pod_id, curr_ep_id, - size);
+                            },
+                            Scroll::PageDown => {
+                                self.scroll_current_window(curr_pod_id, curr_ep_id,  size);
+                            },
+                            _ => {},
                         }
-                    }
-
-                    Some(UserAction::BigUp) => {
-                        let scroll = self.n_row / crate::config::BIG_SCROLL_LENGTH ;
-                        match self.active_menu {
-                            ActiveMenu::PodcastMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.podcast_menu.scroll(- scroll);
-
-                                    self.episode_menu.top_row = 0;
-                                    self.episode_menu.selected = 0;
-
-                                    // update episodes menu with new list
-                                    self.episode_menu.items = self.podcast_menu.get_episodes();
-                                    self.episode_menu.update_items();
-                                    self.update_details_panel();
-                                }
-                            }
-                            ActiveMenu::EpisodeMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.episode_menu.scroll(- scroll);
-                                    self.update_details_panel();
-                                }
-                            }
-                        }
-
-                    }
-
-                    Some(UserAction::BigDown) => {
-                        let scroll = self.n_row / crate::config::BIG_SCROLL_LENGTH;
-                        match self.active_menu {
-                            ActiveMenu::PodcastMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.podcast_menu.scroll(scroll);
-
-                                    self.episode_menu.top_row = 0;
-                                    self.episode_menu.selected = 0;
-
-                                    // update episodes menu with new list
-                                    self.episode_menu.items = self.podcast_menu.get_episodes();
-                                    self.episode_menu.update_items();
-                                    self.update_details_panel();
-                                }
-                            }
-                            ActiveMenu::EpisodeMenu => {
-                                if curr_ep_id.is_some() {
-                                    self.episode_menu.scroll(scroll);
-                                }
-                            }
-                        }
-
-                    }
-
-                    Some(UserAction::PageUp) => {
-                        let scroll = self.n_row;
-                        match self.active_menu {
-                            ActiveMenu::PodcastMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.podcast_menu.scroll(- scroll);
-
-                                    self.episode_menu.top_row = 0;
-                                    self.episode_menu.selected = 0;
-
-                                    // update episodes menu with new list
-                                    self.episode_menu.items = self.podcast_menu.get_episodes();
-                                    self.episode_menu.update_items();
-                                    self.update_details_panel();
-                                }
-                            }
-                            ActiveMenu::EpisodeMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.episode_menu.scroll(- scroll);
-                                    self.update_details_panel();
-                                }
-                            }
-                        }
-
-                    }
-
-                    Some(UserAction::PageDown) => {
-                        let scroll = self.n_row;
-                        match self.active_menu {
-                            ActiveMenu::PodcastMenu => {
-                                if curr_pod_id.is_some() {
-                                    self.podcast_menu.scroll(scroll);
-
-                                    self.episode_menu.top_row = 0;
-                                    self.episode_menu.selected = 0;
-
-                                    // update episodes menu with new list
-                                    self.episode_menu.items = self.podcast_menu.get_episodes();
-                                    self.episode_menu.update_items();
-                                    self.update_details_panel();
-                                }
-                            }
-                            ActiveMenu::EpisodeMenu => {
-                                if curr_ep_id.is_some() {
-                                    self.episode_menu.scroll(scroll);
-                                }
-                            }
-                        }
-
                     }
 
                     Some(UserAction::Left) => {
@@ -907,6 +783,34 @@ impl<'a> UI<'a> {
                     };
 
                     det.refresh();
+                }
+            }
+        }
+    }
+
+    /// Scrolls the current active menu by
+    /// the specified amount and refreshes
+    /// the window.
+    /// Positive Scroll is down.
+    pub fn scroll_current_window(&mut self, _ep_id: Option<i64>, pod_id: Option<i64>, scroll: i32){
+        match self.active_menu {
+            ActiveMenu::PodcastMenu => {
+                if pod_id.is_some() {
+                    self.podcast_menu.scroll(scroll);
+
+                    self.episode_menu.top_row = 0;
+                    self.episode_menu.selected = 0;
+
+                    // update episodes menu with new list
+                    self.episode_menu.items = self.podcast_menu.get_episodes();
+                    self.episode_menu.update_items();
+                    self.update_details_panel();
+                }
+            }
+            ActiveMenu::EpisodeMenu => {
+                if pod_id.is_some() {
+                    self.episode_menu.scroll(scroll);
+                    self.update_details_panel();
                 }
             }
         }
