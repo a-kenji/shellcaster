@@ -25,8 +25,9 @@ pub const EPISODE_PUBDATE_LENGTH: usize = 60;
 // display the details panel
 pub const DETAILS_PANEL_LENGTH: i32 = 135;
 
-// How many lines will be scrolled by the big scroll
-pub const BIG_SCROLL_AMOUNT: i32 = 3;
+// How many lines will be scrolled by the big scroll,
+// in relation to the rows eg: 4 = 1/4 of the screen
+pub const BIG_SCROLL_AMOUNT: i32 = 4;
 
 
 /// Holds information about user configuration of program.

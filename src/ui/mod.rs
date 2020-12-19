@@ -349,16 +349,16 @@ impl<'a> UI<'a> {
                             // on screen size
                             Scroll::BigUp => {
                                 self.scroll_current_window(curr_pod_id,
-                                    - crate::config::BIG_SCROLL_AMOUNT);
+                                    - self.n_row / 4);
                             },
                             Scroll::BigDown => {
-                                self.scroll_current_window(curr_pod_id, crate::config::BIG_SCROLL_AMOUNT);
+                                self.scroll_current_window(curr_pod_id, self.n_row / 4);
                             },
                             Scroll::PageUp => {
-                                self.scroll_current_window(curr_pod_id, - self.n_col);
+                                self.scroll_current_window(curr_pod_id, - self.n_row);
                             },
                             Scroll::PageDown => {
-                                self.scroll_current_window(curr_pod_id,  self.n_col);
+                                self.scroll_current_window(curr_pod_id,  self.n_row);
                             },
                             _ => {},
                         }
